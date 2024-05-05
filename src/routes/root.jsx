@@ -2,11 +2,17 @@ import {
     Outlet,
     Link,
     useLoaderData,
-  } from "react-router-dom";
-  import { getContacts } from "../contacts";
+    Form,
+} from "react-router-dom";
+import { getContacts } from "../contacts";
 export async function loader() {
     const contacts = await getContacts();
     return { contacts };
+  }
+
+export async function action() {
+    const contact = await createContact();
+    return { contact };
   }
 export default function Root() {
     const { contacts } = useLoaderData();
@@ -37,6 +43,7 @@ export default function Root() {
               <button type="submit">New</button>
             </form>
           </div>
+          
           <nav>
           {contacts.length ? (
             <ul>
@@ -71,8 +78,11 @@ export default function Root() {
             </ul>
           </nav>
         </div>
-        <div id="detail"></div>
+        <div id="detail">
         <Outlet/>
-      </>
+        </div>
+        </>
+       
+      
     );
   }
