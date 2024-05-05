@@ -1,7 +1,16 @@
+import { Form, useLoaderData } from "react-router-dom";
+
 import localforage from "localforage";
 import { matchSorter } from "match-sorter";
 import sortBy from "sort-by";
 
+export async function loader({ params }) {
+  const contact = await getContact(params.contactId);
+  return { contact };
+}
+export default function Contact() {
+  const { contact } = useLoaderData();
+}
 
 export async function getContacts(query) {
   await fakeNetwork(`getContacts:${query}`);

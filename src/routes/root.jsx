@@ -1,19 +1,24 @@
 import {
-    Outlet,
-    Link,
-    useLoaderData,
-    Form,
+  Outlet,
+  NavLink,
+  Link,
+  useLoaderData,
+  Form,
+  redirect,
 } from "react-router-dom";
-import { getContacts } from "../contacts";
-export async function loader() {
-    const contacts = await getContacts();
-    return { contacts };
-  }
+  import { getContacts, createContact } from "../contacts";
 
-export async function action() {
+  export async function action() {
     const contact = await createContact();
-    return { contact };
+    return redirect(`/contacts/${contact.id}/edit`);
   }
+export async function loader() {
+  const contacts = await getContacts();
+  return { contacts };
+}
+
+
+
 export default function Root() {
     const { contacts } = useLoaderData();
     return (
@@ -49,6 +54,16 @@ export default function Root() {
             <ul>
               {contacts.map((contact) => (
                 <li key={contact.id}>
+                  <NavLink
+                    to={`contacts/${contact.id}`}
+                    className={({ isActive, isPending }) =>
+                      isActive
+                        ? "active"
+                        : isPending
+                        ? "pending"
+                        : ""
+                    }
+                  >
                   <Link to={`contacts/${contact.id}`}>
                     {contact.first || contact.last ? (
                       <>
@@ -59,6 +74,7 @@ export default function Root() {
                     )}{" "}
                     {contact.favorite && <span>★</span>}
                   </Link>
+                  </NavLink>
                 </li>
               ))}
             </ul>
@@ -67,6 +83,9 @@ export default function Root() {
               <i>No contacts</i>
             </p>
           )}
+          <Form method="post">
+            <button type="submit">New</button>
+          </Form>
           
             <ul>
               <li>
